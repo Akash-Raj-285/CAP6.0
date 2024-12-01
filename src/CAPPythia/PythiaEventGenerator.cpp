@@ -214,7 +214,7 @@ void PythiaEventGenerator::execute()
 //    int ist = tracks_fStatusCode[iParticle];
 //    if (ist <= 0) continue;
     int pdg = pythia->event[i].id();
-    if (abs(pdg)<40  || pdg==2101) continue; // skip quarks,  leptons, and photons
+//    if (abs(pdg)<40  || pdg==2101) continue; // skip quarks,  leptons, and photons
     if (!pythia->event[i].isFinal()) continue;
     //if (reportDebug(__FUNCTION__))   cout << "     pdg:" << pdg << endl;
     ParticleType * particleType = particleDb->findPdgCode(pdg);

@@ -13,6 +13,8 @@
 #include "JetHelpers.hpp"
 #include "PrintHelpers.hpp"
 #include "RootHelpers.hpp"
+#include <math.h>
+#include <cmath>
 
 ClassImp(CAP::JetPairHistos);
 
@@ -197,6 +199,9 @@ void JetPairHistos::fill(PseudoJet&  jet)
   double jet_phi = jet.phi();
   double jet_pt  = jet.perp();
   double jet_eta = jet.pseudorapidity();
+  double jet_p =   std::sqrt( ( /* px^2 */jet.px()*jet.px() ) + (/* py^2 */ jet.py()*jet.py()) + (/* pz^2 */ jet.pz()*jet.pz()) );
+  /* Since we are intersed in magnitude of jT not the vector jT , i will avoid calculating jT components , This will be done down below in th following loop*/
+
   int pdgId1, pdgId2;
   double q1, q2;
 
@@ -212,8 +217,11 @@ void JetPairHistos::fill(PseudoJet&  jet)
     double part1_pt  = part1.perp();
     double part1_eta = part1.pseudorapidity();
     double part1_z   = part1_pt/jet_pt;
-    double part1_jt  = 0;
-    double part1_th  = 0;
+
+    double part1_p = std::sqrt( (/*px^2*/ part1.px()*part1.px()) + (/*py^2*/ part1.py()*part1.py()) +(/*pz^2*/ part1.pz()*part1.pz()) );
+    double part1_jt  = std::sqrt( (/* particle_p^2*/part1_p*part1_p) - (/* jet_p^2*/jet_p*jet_p) );    /* using loging jT^2 = p_particle^2 + p_Jet^2*/ 
+    double part1_th  = std::acos(jet_p/part1_p); /* usnig arccos(Jet's_p/particle_p) to finf the theta between the constituent particle vector from the Jets axix*/
+
     //calculateJtTheta(jet_px,jet_py,jet_pz,jet_p,part1_px,part1_py,part1_pz,part1_p,part1_jt,part1_th);
     for (const auto & part2 : constituents)
     {
@@ -227,8 +235,11 @@ void JetPairHistos::fill(PseudoJet&  jet)
       double part2_pt  = part2.perp();
       double part2_eta = part2.pseudorapidity();
       double part2_z   = part2_pt/jet_pt;
-      double part2_jt  = 0;
-      double part2_th  = 0;
+
+      double part2_p = std::sqrt( (/*px^2*/ part2.px()*part2.px()) + (/*py^2*/ part2.py()*part2.py()) +(/*pz^2*/ part2.pz()*part2.pz()) );
+      double part2_jt  = std::sqrt( (/* particle_p^2*/part2_p*part2_p) - (/* jet_p^2*/jet_p*jet_p) );    /* using loging jT^2 = p_particle^2 + p_Jet^2*/ 
+      double part2_th  = std::acos(jet_p/part2_p); /* usnig arccos(Jet's_p/particle_p) to finf the theta between the constituent particle vector from the Jets axix*/
+
       //calculateJtTheta(jet_px,jet_py,jet_pz,jet_p,part1_px,part2_py,part2_pz,part2_p,part2_jt,part2_th);
       
       h_jet_n2_ptpt->Fill(part1_pt,part2_pt);

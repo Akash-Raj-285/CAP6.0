@@ -13,6 +13,9 @@
 #include "JetHelpers.hpp"
 #include "PrintHelpers.hpp"
 #include "RootHelpers.hpp"
+#include <math.h>
+#include <cmath>
+
 
 ClassImp(CAP::JetSingleHistos);
 
@@ -196,7 +199,9 @@ void JetSingleHistos::fill(PseudoJet&  jet)
   double jet_phi = jet.phi();
   double jet_pt  = jet.perp();
   double jet_eta = jet.pseudorapidity();
-  
+  double jet_p =  std::sqrt( ( /* px^2 */jet.px()*jet.px() ) + (/* py^2 */ jet.py()*jet.py()) + (/* pz^2 */ jet.pz()*jet.pz()) );
+  /* Since we are intersed in magnitude of jT not the vector jT , i will avoid calculating jT components , This will be done down below in th following loop*/
+
   // Constituents of the passed Jet
   const std::vector<PseudoJet> & constituents = jet.constituents();
   for (const auto & part : constituents)
@@ -210,8 +215,12 @@ void JetSingleHistos::fill(PseudoJet&  jet)
     double part_eta = part.pseudorapidity();
     
     double part_z   = part_pt/jet_pt;
-    double part_jt  = 0;
-    double part_th  = 0;
+
+    double part_p = sqrt( (/*px^2*/ part.px()*part.px()) + (/*py^2*/ part.py()*part.py()) +(/*pz^2*/ part.pz()*part.pz()) );
+    double part_jt  = std::sqrt( (/* particle_p^2*/part_p*part_p) - (/* jet_p^2*/jet_p*jet_p) );    /* using loging jT^2 = p_particle^2 + p_Jet^2*/ 
+    double part_th  = std::acos(jet_p/part_p); /* usnig arccos(Jet's_p/particle_p) to finf the theta between the constituent particle vector from the Jets axix*/
+
+
     //calculateJtTheta(jet_px,jet_py,jet_pz,jet_p,part_px,part_py,part_pz,part_p,part_jt,part_th);
     h_jet_n1_pt->Fill(part_pt);
     h_jet_n1_phi->Fill(part_phi);
