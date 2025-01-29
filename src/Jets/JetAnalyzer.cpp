@@ -181,9 +181,13 @@ void JetAnalyzer::execute()
 //    printValue("pz",momentum.Pz());
 //    printValue("e",momentum.E());
 //    printValue("pid",pid);
-    PseudoJet pseudoJet (momentum.Px(),momentum.Px(),momentum.Px(),momentum.E());
+    PseudoJet pseudoJet (momentum.Px(),momentum.Py(),momentum.Pz(),momentum.E());
     pseudoJet.set_user_index(pid);
-    pseudoJetsInput.push_back(pseudoJet);
+    if(pseudoJet.eta()>=-3 && pseudoJet.eta()<=3){
+      pseudoJetsInput.push_back(pseudoJet);
+    }else{
+      continue;
+    }
     //k++;
     }
 //  printValue("jetRadius",jetRadius);

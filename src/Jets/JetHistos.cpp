@@ -230,12 +230,17 @@ void JetHistos::fill(PseudoJet& jet)
   {
     pdgId = constituent.user_index();
     ParticleType * type = particleDb->findPdgCode(pdgId);
-    q = type->getCharge();
+    if(type){
+      q = type->getCharge();
+    }else{q=0;}
     netQ += q;
     if (q>0) np += 1.0;
     else if (q<0) nm += 1.0;
     else n0 += 1.0;
+    std::cout<<"pdgid = "<<pdgId<<" q = "<<q<<std::endl;
   }
+    std::cout<<"NetChatrge = "<<netQ<<std::endl;
+
   
   h_jet_n->Fill(n);
   h_jet_np->Fill(np);
