@@ -220,7 +220,7 @@ void JetHistos::fill(PseudoJet& jet)
   double nm = 0;
   double n0 = 0;
   double netQ = 0;
-  double q;
+  double q = 0;
   int pdgId;
   
   // Constituents of the passed Jet
@@ -239,7 +239,7 @@ void JetHistos::fill(PseudoJet& jet)
     else n0 += 1.0;
     std::cout<<"pdgid = "<<pdgId<<" q = "<<q<<std::endl;
   }
-    std::cout<<"NetChatrge = "<<netQ<<std::endl;
+    std::cout<<"NetCharge = "<<netQ<<std::endl;
 
   
   h_jet_n->Fill(n);
